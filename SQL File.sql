@@ -34,7 +34,8 @@ CREATE TABLE payments (
 
 CREATE TABLE menu (
     item_id SERIAL PRIMARY KEY,
-    item_cost INTEGER
+    item_cost INTEGER,
+    item_description CHAR(100)
 );
 
 CREATE TABLE branches (

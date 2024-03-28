@@ -27,6 +27,7 @@ CREATE TABLE ordered_items (
 
 CREATE TABLE payments (
     payment_id SERIAL PRIMARY KEY,
+    customer_id INTEGER REFERENCES customers(customer_id),
     payment_method CHAR(50),
     payment_credentials VARCHAR(100)
 );

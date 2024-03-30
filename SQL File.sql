@@ -31,7 +31,6 @@ CREATE TABLE branches (
 CREATE TABLE orders (
     order_id SERIAL PRIMARY KEY,
     customer_id INTEGER NOT NULL REFERENCES customers(customer_id),
-    payment_id INTEGER REFERENCES payments(payment_id),
     total_cost DECIMAL(10, 2) NOT NULL,
     delivery_location VARCHAR(200) NOT NULL,
     status CHAR(50) NOT NULL,

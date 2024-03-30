@@ -1,68 +1,67 @@
 CREATE TABLE people(
     person_id SERIAL PRIMARY KEY,
-    name CHAR(100),
-    email VARCHAR(100) UNIQUE ,
-    phone_number VARCHAR(20) UNIQUE
-);
-
-CREATE TABLE customers (
-    customer_id SERIAL PRIMARY KEY,
-    person_id INTEGER REFERENCES people(person_id),
-    payment_id INTEGER REFERENCES payments(payment_id)
+    name CHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone_number VARCHAR(20) UNIQUE NOT NULL
 );
 
 CREATE TABLE payments (
     payment_id SERIAL PRIMARY KEY,
-    customer_id INTEGER REFERENCES customers(customer_id),
-    payment_method CHAR(50),
-    payment_credentials VARCHAR(100)
+    payment_method CHAR(50) NOT NULL,
+    payment_credentials VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE customers (
+    customer_id SERIAL PRIMARY KEY,
+    person_id INTEGER NOT NULL REFERENCES people(person_id),
+    payment_id INTEGER
 );
 
 CREATE TABLE menu (
     item_id SERIAL PRIMARY KEY,
-    item_cost INTEGER,
-    item_description CHAR(100) UNIQUE
+    item_cost INTEGER NOT NULL,
+    item_description CHAR(100) UNIQUE NOT NULL
 );
 
 CREATE TABLE branches (
     branch_id SERIAL PRIMARY KEY,
-    branch_location VARCHAR(200) UNIQUE
+    branch_location VARCHAR(200) UNIQUE NOT NULL
 );
 
 CREATE TABLE orders (
     order_id SERIAL PRIMARY KEY,
-    customer_id INTEGER REFERENCES customers(customer_id),
+    customer_id INTEGER NOT NULL REFERENCES customers(customer_id),
     payment_id INTEGER REFERENCES payments(payment_id),
-    total_cost DECIMAL(10, 2),
-    delivery_location VARCHAR(200),
-    status CHAR(50),
-    branch_id INTEGER REFERENCES branches(branch_id),
-    order_date DATE
+    total_cost DECIMAL(10, 2) NOT NULL,
+    delivery_location VARCHAR(200) NOT NULL,
+    status CHAR(50) NOT NULL,
+    branch_id INTEGER NOT NULL REFERENCES branches(branch_id),
+    order_date DATE NOT NULL
 );
 
 CREATE TABLE ordered_items (
     ordered_id SERIAL PRIMARY KEY,
-    order_id INTEGER REFERENCES orders(order_id),
-    customer_id INTEGER REFERENCES customers(customer_id),
-    employee_id INTEGER REFERENCES employees(employee_id),
-    item_id INTEGER REFERENCES menu(item_id),
-    quantity INTEGER,
+    order_id INTEGER NOT NULL REFERENCES orders(order_id),
+    customer_id INTEGER NOT NULL REFERENCES customers(customer_id),
+    employee_id INTEGER NOT NULL REFERENCES employees(employee_id),
+    item_id INTEGER NOT NULL REFERENCES menu(item_id),
+    quantity INTEGER NOT NULL,
     customizations VARCHAR(50)
 );
 
 CREATE TABLE employees (
     employee_id SERIAL PRIMARY KEY,
-    person_id INTEGER REFERENCES people(person_id),
-    branch_id INTEGER REFERENCES branches(branch_id)
+    person_id INTEGER NOT NULL REFERENCES people(person_id),
+    branch_id INTEGER NOT NULL REFERENCES branches(branch_id)
 );
 
 CREATE TABLE reviews (
     review_id SERIAL PRIMARY KEY,
-    customer_id INTEGER REFERENCES customers(customer_id),
-    branch_id INTEGER REFERENCES branches(branch_id),
-    order_id INTEGER REFERENCES orders(order_id),
-    review TEXT,
-    Rating INTEGER CHECK (Rating >= 1 AND Rating <= 5)
+    customer_id INTEGER NOT NULL REFERENCES customers(customer_id),
+    branch_id INTEGER NOT NULL REFERENCES branches(branch_id),
+    order_id INTEGER NOT NULL REFERENCES orders(order_id),
+    review TEXT NOT NULL,
+    Rating INTEGER CHECK (Rating >= 1 AND Rating <= 5) NOT NULL
 );
 
 UPDATE orders o

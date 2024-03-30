@@ -28,10 +28,16 @@ CREATE TABLE branches (
     branch_location VARCHAR(200) UNIQUE NOT NULL
 );
 
+CREATE TABLE employees (
+    employee_id SERIAL PRIMARY KEY,
+    person_id INTEGER NOT NULL REFERENCES people(person_id),
+    branch_id INTEGER NOT NULL REFERENCES branches(branch_id)
+);
+
 CREATE TABLE orders (
     order_id SERIAL PRIMARY KEY,
     customer_id INTEGER NOT NULL REFERENCES customers(customer_id),
-    total_cost DECIMAL(10, 2) NOT NULL,
+    total_cost DECIMAL(10, 2),
     delivery_location VARCHAR(200) NOT NULL,
     status CHAR(50) NOT NULL,
     branch_id INTEGER NOT NULL REFERENCES branches(branch_id),
@@ -48,11 +54,6 @@ CREATE TABLE ordered_items (
     customizations VARCHAR(50)
 );
 
-CREATE TABLE employees (
-    employee_id SERIAL PRIMARY KEY,
-    person_id INTEGER NOT NULL REFERENCES people(person_id),
-    branch_id INTEGER NOT NULL REFERENCES branches(branch_id)
-);
 
 CREATE TABLE reviews (
     review_id SERIAL PRIMARY KEY,
@@ -71,6 +72,7 @@ SET total_cost = (
     WHERE oi.order_id = o.order_id
     );
 
+
 INSERT INTO people(name, email, phone_number) VALUES ('John Wick', '1@gmail.com', '0000000000');
 INSERT INTO people(name, email, phone_number) VALUES ('Paul Atreides', '2@gmail.com', '0000000001');
 INSERT INTO people(name, email, phone_number) VALUES ('Will Smith', '3@gmail.com', '0000000002');
@@ -87,21 +89,24 @@ INSERT INTO people(name, email, phone_number) VALUES ('John Doe', '3@quickbites.
 INSERT INTO people(name, email, phone_number) VALUES ('John Jones', '4@quickbites.com', '0000000010');
 INSERT INTO people(name, email, phone_number) VALUES ('Clark Kent', '5@quickbites.com', '0000000011');
 
-INSERT INTO payments(customer_id, payment_method, payment_credentials) VALUES (1, 'QR Payment', 'gsfdbvcFGVC');
-INSERT INTO payments(customer_id, payment_method, payment_credentials) VALUES (2, 'Credit Card', 'asfddgs@ES');
-INSERT INTO payments(customer_id, payment_method, payment_credentials) VALUES (3,'Debit Card', 'DGFVS$#%');
-INSERT INTO payments(customer_id, payment_method, payment_credentials) VALUES (4, 'PayPal', '@#$%@E2345');
-INSERT INTO payments(customer_id, payment_method, payment_credentials) VALUES (5, 'Credit Card', 'sfge=45-6');
-INSERT INTO payments(customer_id, payment_method, payment_credentials) VALUES (6, 'QR Payment', '346thdfgh');
-INSERT INTO payments(customer_id, payment_method, payment_credentials) VALUES (7, 'PayPal', '@#%$$Wdf');
-INSERT INTO payments(customer_id, payment_method, payment_credentials) VALUES (8, 'Credit Card', 'hdgfs#$@!');
-INSERT INTO payments(customer_id, payment_method, payment_credentials) VALUES (9, 'Debit Card', 'sdfesf!@#@!');
-INSERT INTO payments(customer_id, payment_method, payment_credentials) VALUES (10, 'Credit Card', '124!asdg');
+INSERT INTO payments(payment_method, payment_credentials) VALUES ('QR Payment', 'gsfdbvcFGVC');
+INSERT INTO payments(payment_method, payment_credentials) VALUES ('Credit Card', 'asfddgs@ES');
+INSERT INTO payments(payment_method, payment_credentials) VALUES ('Debit Card', 'DGFVS$#%');
+INSERT INTO payments(payment_method, payment_credentials) VALUES ('PayPal', '@#$%@E2345');
+INSERT INTO payments(payment_method, payment_credentials) VALUES ('Credit Card', 'sfge=45-6');
+INSERT INTO payments(payment_method, payment_credentials) VALUES ('QR Payment', '346thdfgh');
+INSERT INTO payments(payment_method, payment_credentials) VALUES ('PayPal', '@#%$$Wdf');
+INSERT INTO payments(payment_method, payment_credentials) VALUES ('Credit Card', 'hdgfs#$@!');
+INSERT INTO payments(payment_method, payment_credentials) VALUES ('Debit Card', 'sdfesf!@#@!');
+INSERT INTO payments(payment_method, payment_credentials) VALUES ('Credit Card', '124!asdg');
 
+%%sql
 INSERT INTO branches(branch_location) VALUES ('Tungsin');
 INSERT INTO branches(branch_location) VALUES ('Salaya');
 INSERT INTO branches(branch_location) VALUES ('Khao San');
 INSERT INTO branches(branch_location) VALUES ('Phuket');
+
+
 
 INSERT INTO customers(person_id, payment_id) VALUES (1,1 );
 INSERT INTO customers(person_id, payment_id) VALUES (2,2 );
@@ -127,13 +132,14 @@ INSERT INTO menu(item_cost, item_description) VALUES (200, 'Beef Burger');
 INSERT INTO menu(item_cost, item_description) VALUES (180, 'Pork Burger');
 INSERT INTO menu(item_cost, item_description) VALUES (100, 'French Fries');
 
-INSERT INTO orders(customer_id, payment_id, delivery_location, status, branch_id, order_date)
-VALUES (1, 1, '123 Roadhouse', 'In the Kitchen', 1, '2024-03-27');
-INSERT INTO orders(customer_id, payment_id, delivery_location, status, branch_id, order_date)
-VALUES (2, 2, 'Ram Ranch', 'Delivering', 2, '2024-03-27');
-INSERT INTO orders(customer_id, payment_id, delivery_location, status, branch_id, order_date)
-VALUES (3, 3, 'Electric Avenue', 'Delivered', 3, '2024-03-26');
+INSERT INTO orders(customer_id, delivery_location, status, branch_id, order_date)
+VALUES (1, '123 Roadhouse', 'In the Kitchen', 1, '2024-03-27');
+INSERT INTO orders(customer_id, delivery_location, status, branch_id, order_date)
+VALUES (2, 'Ram Ranch', 'Delivering', 2, '2024-03-27');
+INSERT INTO orders(customer_id, delivery_location, status, branch_id, order_date)
+VALUES (3, 'Electric Avenue', 'Delivered', 3, '2024-03-26');
 
+%%sql
 INSERT INTO ordered_items(order_id, customer_id, employee_id, item_id, quantity, customizations) VALUES (1, 1, 1, 1, 2, 'None');
 INSERT INTO ordered_items(order_id, customer_id, employee_id, item_id, quantity, customizations) VALUES (1, 1, 3, 3, 1, '2 Patties');
 INSERT INTO ordered_items(order_id, customer_id, employee_id, item_id, quantity, customizations) VALUES (2, 2, 4, 1, 1, 'Large');
@@ -141,4 +147,3 @@ INSERT INTO ordered_items(order_id, customer_id, employee_id, item_id, quantity,
 
 INSERT INTO reviews(customer_id, branch_id, order_id, review, rating)
 VALUES (3, 3, 3, 'Burg', 5);
-

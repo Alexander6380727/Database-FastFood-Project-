@@ -113,7 +113,6 @@ INSERT INTO customers(person_id, payment_id) VALUES (2,2 );
 INSERT INTO customers(person_id, payment_id) VALUES (3,3 );
 INSERT INTO customers(person_id, payment_id) VALUES (4,4 );
 INSERT INTO customers(person_id, payment_id) VALUES (5,5 );
-INSERT INTO customers(person_id, payment_id) VALUES (5,5 );
 INSERT INTO customers(person_id, payment_id) VALUES (6,6 );
 INSERT INTO customers(person_id, payment_id) VALUES (7,7 );
 INSERT INTO customers(person_id, payment_id) VALUES (8,8 );
@@ -133,17 +132,77 @@ INSERT INTO menu(item_cost, item_description) VALUES (180, 'Pork Burger');
 INSERT INTO menu(item_cost, item_description) VALUES (100, 'French Fries');
 
 INSERT INTO orders(customer_id, delivery_location, status, branch_id, order_date)
-VALUES (1, '123 Roadhouse', 'In the Kitchen', 1, '2024-03-27');
+VALUES (1, '123 Roadhouse', 'Delivered', 1, '2024-03-20');
 INSERT INTO orders(customer_id, delivery_location, status, branch_id, order_date)
-VALUES (2, 'Ram Ranch', 'Delivering', 2, '2024-03-27');
+VALUES (2, 'Ram Ranch', 'Delivered', 2, '2024-03-21');
 INSERT INTO orders(customer_id, delivery_location, status, branch_id, order_date)
-VALUES (3, 'Electric Avenue', 'Delivered', 3, '2024-03-26');
+VALUES (3, 'Electric Avenue', 'Delivered', 3, '2024-03-22');
+INSERT INTO orders(customer_id, delivery_location, status, branch_id, order_date)
+VALUES (4, 'Spongebobs House', 'Delivered', 1, '2024-03-23');
+INSERT INTO orders(customer_id, delivery_location, status, branch_id, order_date)
+VALUES (5, 'Hell', 'Delivered', 2, '2024-03-24');
+INSERT INTO orders(customer_id, delivery_location, status, branch_id, order_date)
+VALUES (6, 'Antarctica', 'Delivering', 3, '2024-03-25');
+INSERT INTO orders(customer_id, delivery_location, status, branch_id, order_date)
+VALUES (7, 'Electric Boogaloo', 'Delivering', 3, '2024-03-25');
+INSERT INTO orders(customer_id, delivery_location, status, branch_id, order_date)
+VALUES (8, 'Home', 'In the Kitchen', 1, '2024-03-25');
+INSERT INTO orders(customer_id, delivery_location, status, branch_id, order_date)
+VALUES (9, 'Space', 'In the Kitchen', 2, '2024-03-25');
+INSERT INTO orders(customer_id, delivery_location, status, branch_id, order_date)
+VALUES (10, 'Ocean', 'In the Kitchen', 3, '2024-03-25');
 
 %%sql
 INSERT INTO ordered_items(order_id, customer_id, employee_id, item_id, quantity, customizations) VALUES (1, 1, 1, 1, 2, 'None');
-INSERT INTO ordered_items(order_id, customer_id, employee_id, item_id, quantity, customizations) VALUES (1, 1, 3, 3, 1, '2 Patties');
-INSERT INTO ordered_items(order_id, customer_id, employee_id, item_id, quantity, customizations) VALUES (2, 2, 4, 1, 1, 'Large');
-INSERT INTO ordered_items(order_id, customer_id, employee_id, item_id, quantity, customizations) VALUES (3, 3, 5, 3, 1, 'None');
+INSERT INTO ordered_items(order_id, customer_id, employee_id, item_id, quantity, customizations) VALUES (1, 1, 1, 2, 3, 'None');
+INSERT INTO ordered_items(order_id, customer_id, employee_id, item_id, quantity, customizations) VALUES (2, 2, 3, 3, 1, 'None');
+INSERT INTO ordered_items(order_id, customer_id, employee_id, item_id, quantity, customizations) VALUES (3, 3, 4, 4, 2, 'None');
+INSERT INTO ordered_items(order_id, customer_id, employee_id, item_id, quantity, customizations) VALUES (3, 3, 4, 5, 4, 'None');
+INSERT INTO ordered_items(order_id, customer_id, employee_id, item_id, quantity, customizations) VALUES (4, 4, 1, 6, 1, 'None');
+INSERT INTO ordered_items(order_id, customer_id, employee_id, item_id, quantity, customizations) VALUES (5, 5, 3, 1, 2, 'None');
+INSERT INTO ordered_items(order_id, customer_id, employee_id, item_id, quantity, customizations) VALUES (6, 6, 4, 2, 2, 'None');
+INSERT INTO ordered_items(order_id, customer_id, employee_id, item_id, quantity, customizations) VALUES (7, 7, 4, 3, 1, 'None');
+INSERT INTO ordered_items(order_id, customer_id, employee_id, item_id, quantity, customizations) VALUES (8, 8, 1, 4, 4, 'None');
+INSERT INTO ordered_items(order_id, customer_id, employee_id, item_id, quantity, customizations) VALUES (9, 9, 3, 5, 2, 'None');
+INSERT INTO ordered_items(order_id, customer_id, employee_id, item_id, quantity, customizations) VALUES (10, 10, 4, 6, 1, 'None');
 
 INSERT INTO reviews(customer_id, branch_id, order_id, review, rating)
-VALUES (3, 3, 3, 'Burg', 5);
+VALUES (1, 1, 1, 'Nice', 5);
+INSERT INTO reviews(customer_id, branch_id, order_id, review, rating)
+VALUES (2, 2, 2, 'Alright', 4);
+INSERT INTO reviews(customer_id, branch_id, order_id, review, rating)
+VALUES (3, 3, 3, 'Mid', 3);
+INSERT INTO reviews(customer_id, branch_id, order_id, review, rating)
+VALUES (4, 1, 4, 'Meh', 2);
+INSERT INTO reviews(customer_id, branch_id, order_id, review, rating)
+VALUES (5, 2, 5, 'Terrible', 1);
+
+SELECT * FROM reviews r WHERE r.rating >= 3;
+
+CREATE VIEW high_rated_reviews AS
+SELECT *
+FROM reviews
+WHERE rating >= 4;
+
+SELECT * FROM high_rated_reviews;
+
+CREATE OR REPLACE FUNCTION update_order_status(p_order_id INT, new_status TEXT)
+RETURNS VOID AS $$
+BEGIN
+    UPDATE orders
+    SET status = new_status
+    WHERE order_id = p_order_id;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT update_order_status(8, 'Delivered');
+
+SELECT * FROM menu;
+SELECT *
+FROM menu
+WHERE item_description LIKE '%Burger%';
+
+SELECT *
+FROM people
+WHERE person_id IN (SELECT person_id FROM customers);
+

@@ -14,7 +14,7 @@ CREATE TABLE payments (
 CREATE TABLE customers (
     customer_id SERIAL PRIMARY KEY,
     person_id INTEGER NOT NULL REFERENCES people(person_id),
-    payment_id INTEGER
+    payment_id INTEGER NOT NULL REFERENCES payments(payment_id)
 );
 
 CREATE TABLE menu (

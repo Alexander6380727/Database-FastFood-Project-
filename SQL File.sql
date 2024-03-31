@@ -100,13 +100,10 @@ INSERT INTO payments(payment_method, payment_credentials) VALUES ('Credit Card',
 INSERT INTO payments(payment_method, payment_credentials) VALUES ('Debit Card', 'sdfesf!@#@!');
 INSERT INTO payments(payment_method, payment_credentials) VALUES ('Credit Card', '124!asdg');
 
-%%sql
 INSERT INTO branches(branch_location) VALUES ('Tungsin');
 INSERT INTO branches(branch_location) VALUES ('Salaya');
 INSERT INTO branches(branch_location) VALUES ('Khao San');
 INSERT INTO branches(branch_location) VALUES ('Phuket');
-
-
 
 INSERT INTO customers(person_id, payment_id) VALUES (1,1 );
 INSERT INTO customers(person_id, payment_id) VALUES (2,2 );
@@ -206,3 +203,51 @@ SELECT *
 FROM people
 WHERE person_id IN (SELECT person_id FROM customers);
 
+SELECT r.review_id, r.customer_id, r.branch_id, r.order_id, r.review, r.rating
+FROM reviews r
+JOIN customers c ON r.customer_id = c.customer_id
+WHERE r.rating = 4;
+
+SELECT review_id, customer_id, branch_id, order_id, review, rating
+FROM reviews
+WHERE customer_id = 1;
+
+SELECT review_id, customer_id, branch_id, order_id, review, rating
+FROM reviews
+WHERE branch_id = 1;
+
+SELECT order_id, delivery_location, status
+FROM orders
+WHERE status = 'Delivered';
+
+SELECT oi.ordered_id, oi.order_id, oi.item_id, oi.quantity, oi.customizations
+FROM ordered_items oi
+JOIN orders o ON oi.order_id = o.order_id
+WHERE oi.order_id = 1;
+
+SELECT p.payment_method, p.payment_credentials
+FROM customers c
+JOIN people pe ON c.person_id = pe.person_id
+JOIN payments p ON c.payment_id = p.payment_id
+WHERE c.customer_id = 1;
+
+SELECT ordered_id, order_id, item_id, quantity, customizations
+FROM ordered_items
+WHERE quantity > 1;
+
+SELECT order_id, customer_id, total_cost, delivery_location, status, branch_id, order_date
+FROM orders
+WHERE branch_id = 1;
+
+SELECT review_id, customer_id, order_id, review, rating
+FROM reviews
+WHERE branch_id = 1;
+
+SELECT e.employee_id, p.name, p.email, p.phone_number
+FROM employees e
+JOIN people p ON e.person_id = p.person_id
+WHERE e.branch_id = 1;
+
+SELECT item_id, item_cost, item_description
+FROM menu
+WHERE item_cost > 200;
